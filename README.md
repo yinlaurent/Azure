@@ -1,7 +1,7 @@
-## Azure Repository
+# Azure Repository
 
-#Azure Powershell
+##Azure Powershell
 Azure Powershell scripts examples
 
-# Azure Templates
+## Azure Templates
 Azure deployment templates examples
