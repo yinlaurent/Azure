@@ -1,0 +1,250 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "storageAccountName": {
+          "type": "string",
+          "metadata": {
+            "description": "This is the name of the your storage account"
+          }
+      },
+      "dnsLabelPrefix": {
+          "type": "string",
+          "metadata": {
+              "description": "DNS Label for the Public IP. Must be lowercase. It should match with the following regular expression: ^[a-z][a-z0-9-]{1,61}[a-z0-9]$ or it will raise an error."
+          }
+      },
+      "adminUserName": {
+          "type": "string",
+          "metadata": {
+              "description": "UserName for the Virtual Machine"
+          }
+      },
+      "adminPassword": {
+          "type": "securestring",
+          "metadata": {
+              "description": "Password for the Virtual Machine"
+          }
+      },
+      "vmName": {
+          "type": "string",
+          "metadata": {
+            "description": "This is the name of your VM"
+          }
+      },
+      "vmSize": {
+          "type": "string",
+          "metadata": {
+            "description": "This is the size of your VM"
+          }
+      },
+	  "chef_node_name": {
+          "type": "string",
+          "metadata": {
+            "description": "The name for the node (VM) in the Chef Organization"
+          }
+      },
+      "chef_server_url": {
+          "type": "string",
+          "metadata": {
+            "description": "Organization URL for the Chef Server. Example https://ChefServerDnsName.cloudapp.net/organizations/Orgname"
+          }
+      },
+      "validation_client_name": {
+          "type": "string",
+          "metadata": {
+            "description": "Validator key name for the organization. Example : MyOrg-validator"
+          }
+      },
+      "runlist": {
+          "type": "string",
+          "defaultValue": "recipe[getting-started]",
+          "metadata": {
+            "description": "Optional Run List to Execute"
+          }
+      },
+      "autoUpdateClient": {
+          "type": "string",
+          "defaultValue": "false",
+          "metadata": {
+            "description": "Optional Flag for auto update"
+          }
+      },
+      "validation_key": {
+          "type": "string",
+          "metadata": {
+            "description": "JSON Escaped Validation Key"
+          }
+      }
+    },
+    "variables": {
+      "location": "[resourceGroup().location]",
+        "imagePublisher": "Canonical",
+        "imageOffer": "UbuntuServer",
+        "imageSKU": "14.04.2-LTS",
+        "OSDiskName": "osdiskforlinux",
+        "publicIPAddressName": "AzureChefLinuxPublicIp",
+        "vmName": "[parameters('vmName')]",
+        "virtualNetworkName": "AzureChefLinuxVnet",
+        "nicName": "AzureChefLinuxNic",
+        "addressPrefix": "10.4.0.0/16",
+        "subnet1Name": "AzureChefLinuxSubnet",
+        "subnet1Prefix": "10.4.0.0/24",
+        "publicIPAddressType": "Dynamic",
+        "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
+        "subnet1Ref": "[concat(variables('vnetID'),'/subnets/',variables('subnet1Name'))]",
+        "osDiskVhdName": "[concat('http://',parameters('storageAccountName'),'.blob.core.windows.net/vhds/',variables('vmName'),'osDisk.vhd')]",
+        "apiVersion": "2015-06-15",
+		"vmExtensionName": "LinuxChefClient"
+    },
+    "resources": [
+        {
+            "apiVersion": "[variables('apiVersion')]",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[variables('publicIPAddressName')]",
+            "location": "[variables('location')]",
+            "properties": {
+                "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+                "dnsSettings": {
+                    "domainNameLabel": "[parameters('dnsLabelPrefix')]"
+                }
+            }
+        },
+        {
+            "apiVersion": "[variables('apiVersion')]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[variables('virtualNetworkName')]",
+            "location": "[variables('location')]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[variables('addressPrefix')]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[variables('subnet1Name')]",
+                        "properties": {
+                            "addressPrefix": "[variables('subnet1Prefix')]"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "[variables('apiVersion')]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[variables('nicName')]",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
+                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+                            },
+                            "subnet": {
+                                "id": "[variables('subnet1Ref')]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "[variables('apiVersion')]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[variables('vmName')]",
+            "location": "[variables('location')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('vmSize')]"
+                },
+                "osProfile": {
+                    "computerName": "[variables('vmName')]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]"
+                },
+                  "storageProfile": {
+                    "imageReference": {
+                      "publisher": "[variables('imagePublisher')]",
+                      "offer": "[variables('imageOffer')]",
+                      "sku": "[variables('imageSKU')]",
+                      "version": "latest"
+                  },
+                  "osDisk": {
+                    "name": "[concat(variables('vmName'),'-osDisk')]",
+                    "caching": "ReadWrite",
+                    "createOption": "FromImage",
+                    "vhd": {
+                      "uri": "[variables('osDiskVhdName')]"
+                    }
+                }
+              },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": "true",
+                        "storageUri": "[concat('http://',parameters('storageAccountName'),'.blob.core.windows.net')]"
+                    }
+                }
+            }
+        },
+		{
+		  "type": "Microsoft.Compute/virtualMachines/extensions",
+		  "name": "[concat(variables('vmName'),'/', variables('vmExtensionName'))]",
+		  "apiVersion": "2015-05-01-preview",
+		  "location": "[variables('location')]",
+		  "dependsOn": [
+			"[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+		  ],
+		  "properties": {
+			"publisher": "Chef.Bootstrap.WindowsAzure",
+			"type": "LinuxChefClient",
+			"typeHandlerVersion": "1210.12",
+			"settings": {
+			  "bootstrap_options": {
+				"chef_node_name": "[parameters('chef_node_name')]",
+				"chef_server_url": "[parameters('chef_server_url')]",
+				"validation_client_name": "[parameters('validation_client_name')]"
+			  },
+			  "runlist": "[parameters('runlist')]"
+			},
+			"protectedSettings": {
+			  "validation_key": "[parameters('validation_key')]"
+			}
+		  }
+		},
+		{
+		  "type": "Microsoft.Compute/virtualMachines/extensions",
+		  "name": "[concat(variables('vmName'),'/DockerExtension')]",
+		  "apiVersion": "2015-05-01-preview",
+		  "location": "[variables('location')]",
+		  "dependsOn": [
+			"[concat('Microsoft.Compute/virtualMachines/', variables('vmName'))]"
+		  ],
+		  "properties": {
+			"publisher": "Microsoft.Azure.Extensions",
+			"type": "DockerExtension",
+			"typeHandlerVersion": "1.0",
+			"autoUpgradeMinorVersion": true,
+			"settings": {}
+		  }
+		}
+    ]
+}

@@ -1,0 +1,7 @@
+{
+  "itemDisplayName": "Azure and Chef - Windows",
+  "description": "Deploy a VM with Windows, Powershell DSC, linked to the Chef configuration management platform.",
+  "summary": "Deploy a VM with Windows, Powershell DSC, linked to the Chef configuration management platform.",
+  "githubUsername": "yinlaurent",
+  "dateUpdated": "2016-12-02"
+}
