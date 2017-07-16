@@ -1,5 +1,5 @@
-# Azure Powershell
-Azure Powershell scripts examples
+# Azure PowerShell
+Azure PowerShell scripts examples
 
 ## Learning More
 
