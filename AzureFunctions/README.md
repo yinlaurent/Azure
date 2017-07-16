@@ -1,5 +1,5 @@
 # Azure Functions
-Azure Functions  examples
+Azure Functions examples
 
 ## Learning More
 
