@@ -1,0 +1,14 @@
+﻿{
+  "disabled": false,
+  "bindings": [
+    {
+      "name": "sbMsg",
+      "type": "serviceBusTrigger",
+      "direction": "in",
+      "topicName": "gab2017topic",
+      "subscriptionName": "salesforce",
+      "connection": "gab2017sb",
+      "accessRights": "Manage"
+    }
+  ]
+}

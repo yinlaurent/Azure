@@ -1,0 +1,12 @@
+D:\Aurabolt\Azure.Salesforce\Azure.Salesforce\bin\Debug\Azure.Salesforce.exe.config
+D:\Aurabolt\Azure.Salesforce\Azure.Salesforce\obj\Debug\Azure.Salesforce.Console.csprojResolveAssemblyReference.cache
+D:\Aurabolt\Azure.Salesforce\Azure.Salesforce\bin\Debug\Azure.Salesforce.exe
+D:\Aurabolt\Azure.Salesforce\Azure.Salesforce\bin\Debug\Azure.Salesforce.pdb
+D:\Aurabolt\Azure.Salesforce\Azure.Salesforce\bin\Debug\Microsoft.ServiceBus.dll
+D:\Aurabolt\Azure.Salesforce\Azure.Salesforce\bin\Debug\Newtonsoft.Json.dll
+D:\Aurabolt\Azure.Salesforce\Azure.Salesforce\bin\Debug\Salesforce.Helper.dll
+D:\Aurabolt\Azure.Salesforce\Azure.Salesforce\bin\Debug\Salesforce.Helper.pdb
+D:\Aurabolt\Azure.Salesforce\Azure.Salesforce\bin\Debug\Microsoft.ServiceBus.xml
+D:\Aurabolt\Azure.Salesforce\Azure.Salesforce\bin\Debug\Newtonsoft.Json.xml
+D:\Aurabolt\Azure.Salesforce\Azure.Salesforce\obj\Debug\Azure.Salesforce.exe
+D:\Aurabolt\Azure.Salesforce\Azure.Salesforce\obj\Debug\Azure.Salesforce.pdb

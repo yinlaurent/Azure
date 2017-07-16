@@ -1,0 +1,6 @@
+D:\Aurabolt\Azure.Salesforce\Salesforce.Helper\bin\Debug\Salesforce.Helper.dll
+D:\Aurabolt\Azure.Salesforce\Salesforce.Helper\bin\Debug\Salesforce.Helper.pdb
+D:\Aurabolt\Azure.Salesforce\Salesforce.Helper\bin\Debug\Newtonsoft.Json.dll
+D:\Aurabolt\Azure.Salesforce\Salesforce.Helper\bin\Debug\Newtonsoft.Json.xml
+D:\Aurabolt\Azure.Salesforce\Salesforce.Helper\obj\Debug\Salesforce.Helper.dll
+D:\Aurabolt\Azure.Salesforce\Salesforce.Helper\obj\Debug\Salesforce.Helper.pdb
