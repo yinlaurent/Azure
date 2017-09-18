@@ -1,0 +1,14 @@
+﻿{
+  "scriptFile": "..\\bin\\Azure.QueueTrigger.dll",
+  "entryPoint": "Azure.QueueTrigger.QueueTrigger.QueueTriggerFunction.Run",
+  "bindings": [
+    {
+      "type": "queueTrigger",
+      "direction": "in",
+      "name": "path",
+      "queueName": "import",
+      "connection": "StorageAccount.ConnectionString"
+    }
+  ],
+  "disabled": false
+}
