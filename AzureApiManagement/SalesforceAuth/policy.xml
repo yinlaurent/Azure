@@ -1,0 +1,29 @@
+<policies>
+    <inbound>
+        <base />
+        <send-request ignore-error="true" timeout="20" response-variable-name="bearerToken" mode="new">
+            <set-url>https://login.salesforce.com/services/oauth2/token</set-url>
+            <set-method>POST</set-method>
+            <set-header name="Content-Type" exists-action="override">
+                <value>application/x-www-form-urlencoded</value>
+            </set-header>
+            <set-body>@{
+            return string.Format("client_id={0}&client_secret={1}&username={2}&password={3}&grant_type=password", "<client_id>", "<client_secret>", "<salesforce_username>", "<password_and_token_concatenation>");
+            }</set-body>
+        </send-request>
+        <set-header name="Authorization" exists-action="override">
+            <value>@("Bearer " + (String)((IResponse)context.Variables["bearerToken"]).Body.As<JObject>()["access_token"])</value>
+        </set-header>
+        <set-backend-service base-url="https://eu6.salesforce.com/services/data/v44.0" />
+        <set-header name="Ocp-Apim-Subscription-Key" exists-action="delete" />
+    </inbound>
+    <backend>
+        <base />
+    </backend>
+    <outbound>
+        <base />
+    </outbound>
+    <on-error>
+        <base />
+    </on-error>
+</policies>
