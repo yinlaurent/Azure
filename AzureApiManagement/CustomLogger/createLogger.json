@@ -1,0 +1,8 @@
+{
+  "loggerType" : "AzureEventHub",
+  "description" : "<logger description>",
+  "credentials" : {
+    "name" : "<name of your event hubs resource>",
+    "connectionString" : "<connection string from the send section>"
+    }
+}
