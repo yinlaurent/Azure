@@ -1,0 +1,39 @@
+<policies>
+    <inbound>
+        <base />
+    </inbound>
+    <backend>
+        <base />
+    </backend>
+    <outbound>
+        <base />
+        <log-to-eventhub logger-id="logger">@{
+            var message = new JObject(
+            new JProperty("DateTimeStamp", DateTime.UtcNow),
+            new JProperty("ServiceName",context.Deployment.ServiceName),
+            new JProperty("RequestId",context.RequestId),
+            new JProperty("IpAddress",context.Request.IpAddress),
+            new JProperty("OperationName",context.Operation.Name),
+            new JProperty("OnError", false),
+            new JProperty("ResponseCode",context.Response.StatusCode),
+            new JProperty("ResponseBody",context.Response.Body.As<string>())
+            ).ToString();
+            return message;
+        }</log-to-eventhub>
+    </outbound>
+    <on-error>
+        <base />
+        <log-to-eventhub logger-id="logger">@{
+            var message = new JObject(
+            new JProperty("DateTimeStamp", DateTime.UtcNow),
+            new JProperty("ServiceName",context.Deployment.ServiceName),
+            new JProperty("RequestId",context.RequestId),
+            new JProperty("IpAddress",context.Request.IpAddress),
+            new JProperty("OperationName",context.Operation.Name),
+            new JProperty("OnError", true),
+            new JProperty("ErrorMessage", context.LastError.Message)
+            ).ToString();
+            return message;
+        }</log-to-eventhub>
+    </on-error>
+</policies>
